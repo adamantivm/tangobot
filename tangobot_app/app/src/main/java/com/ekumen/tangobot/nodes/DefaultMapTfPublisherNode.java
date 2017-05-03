@@ -31,13 +31,13 @@ public class DefaultMapTfPublisherNode extends ExtrinsicsTfPublisherNode {
     public DefaultMapTfPublisherNode() {
         super();
 
-        // map --> odom transformation
-        // Using a (x,y) = (0,0) transformation assuming a 10x10 empty map.
+        // map_old --> odom transformation
+        // Using a (x,y) = (0,0) transformation assuming a 10x10 empty map_old.
         addTransformation(
                 new Transform(
                         new Vector3(0, 0, 0),
                         Quaternion.identity()),
-                "map",
+                "map_old",
                 "odom"
         );
     }

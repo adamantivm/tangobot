@@ -28,8 +28,8 @@ import nav_msgs.MapMetaData;
 import std_msgs.Header;
 
 /**
- * Class that generates message for an empty map of 10x10 meters.
- * TODO: This should be replaced by a Map Generator that could generate a map grid from an image with metadata.
+ * Class that generates message for an empty map_old of 10x10 meters.
+ * TODO: This should be replaced by a Map Generator that could generate a map_old grid from an image with metadata.
  */
 public class EmptyMapGenerator implements OccupancyGridGenerator {
     private static final int WIDTH = 200;
@@ -38,7 +38,7 @@ public class EmptyMapGenerator implements OccupancyGridGenerator {
 
     @Override
     public void fillHeader(Header header) {
-        header.setFrameId("map");
+        header.setFrameId("map_old");
         header.setStamp(Time.fromMillis(System.currentTimeMillis()));
     }
 
@@ -60,7 +60,7 @@ public class EmptyMapGenerator implements OccupancyGridGenerator {
         try {
             output.write(new byte[WIDTH * HEIGHT]);
         } catch (Exception e) {
-            throw new RuntimeException("Empty map generator generateData error: " + e.getMessage());
+            throw new RuntimeException("Empty map_old generator generateData error: " + e.getMessage());
         }
         return output.buffer();
     }

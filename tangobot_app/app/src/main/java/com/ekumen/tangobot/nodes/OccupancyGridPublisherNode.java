@@ -44,7 +44,7 @@ public class OccupancyGridPublisherNode extends AbstractNodeMain {
     public void onStart(ConnectedNode connectedNode) {
         super.onStart(connectedNode);
 
-        mPublisher = connectedNode.newPublisher("map", OccupancyGrid._TYPE);
+        mPublisher = connectedNode.newPublisher("map_old", OccupancyGrid._TYPE);
         mPublisher.setLatchMode(true);
 
         OccupancyGrid message = mPublisher.newMessage();
