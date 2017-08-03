@@ -117,6 +117,15 @@ public class MainActivity extends AppCompatRosActivity implements TangoServiceCl
     private ModuleStatusIndicator mRosNavigationStatusIndicator;
     private ModuleStatusIndicator mMobileBaseStatusIndicator;
 
+    // TODO(adamantivm) This is taken from TangoRosStreamer, in order to interpret properly
+    // the values of onTangoStatus in the TangoServiceClientNode listener.
+    enum TangoStatus {
+        UNKNOWN,
+        SERVICE_NOT_CONNECTED,
+        NO_FIRST_VALID_POSE,
+        SERVICE_CONNECTED
+    }
+
     // Resources
     private static ArrayList<Pair<Integer, String>> mResourcesToLoad = new ArrayList<Pair<Integer, String>>() {{
         add(new Pair<>(R.raw.costmap_common_params, MoveBaseNode.NODE_NAME + "/local_costmap"));
@@ -137,7 +146,7 @@ public class MainActivity extends AppCompatRosActivity implements TangoServiceCl
             @Override
             public void execute() {
                 if (TangoInitializationHelper.isTangoServiceBound()) {
-                    mTangoStatusIndicator.updateStatus(ModuleStatusIndicator.Status.OK);
+                    mTangoStatusIndicator.updateStatus(ModuleStatusIndicator.Status.LOADING);
                     mLog.info("Bound to Tango Service");
                 } else {
                     mTangoStatusIndicator.updateStatus(ModuleStatusIndicator.Status.ERROR);
@@ -471,8 +480,9 @@ public class MainActivity extends AppCompatRosActivity implements TangoServiceCl
                         boolean connected = false;
                         try {
                             for (int i = 0; i < MAX_TANGO_CONNECTION_TRIES; i++) {
+                                // NOTE: Upon successful connection, this call will not return
+                                // See https://github.com/Intermodalics/tango_ros/issues/369
                                 if (mTangoServiceClient.callTangoConnectService(TangoConnectRequest.CONNECT)) {
-                                    mLog.debug("Successfully connected to Tango");
                                     connected = true;
                                     break;
                                 }
@@ -635,7 +645,12 @@ public class MainActivity extends AppCompatRosActivity implements TangoServiceCl
 
     @Override
     public void onTangoStatus(int i) {
-
+        mLog.debug("Tango Status: " + i);
+        if (i > TangoStatus.values().length) {
+            mLog.error("Received an out of range tango status: " + i);
+        } else if (TangoStatus.values()[i] == TangoStatus.SERVICE_CONNECTED) {
+            mTangoStatusIndicator.updateStatus(ModuleStatusIndicator.Status.OK);
+        }
     }
 
     @Override
