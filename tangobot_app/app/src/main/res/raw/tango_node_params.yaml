@@ -1,7 +1,14 @@
 laser_scan_max_height: 0.03
 laser_scan_min_height: 0.02
-localization_mode: 1
 publish_pose_on_tf: true
 publish_pose_on_topic: false
 start_of_service_frame_id: odom
-
+# Parameters to make a map
+localization_mode: 3
+create_new_map: true
+area_description_frame_id: map
+reconstruction:
+  min_num_vertices: 5
+  floorplan_max_error: 0.15
+  resolution_3d: 0.1
+  max_voxel_weight: 32000

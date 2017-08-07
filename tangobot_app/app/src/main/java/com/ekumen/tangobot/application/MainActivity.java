@@ -325,9 +325,12 @@ public class MainActivity extends AppCompatRosActivity implements TangoServiceCl
         mLog.info("Starting extrinsics publishers");
         NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(mHostName);
         nodeConfiguration.setMasterUri(mMasterUri);
+
+        /*
         nodeConfiguration.setNodeName(DefaultMapTfPublisherNode.NODE_NAME);
         mMapExtrinsicsTfPublisherNode = new DefaultMapTfPublisherNode();
         mNodeMainExecutor.execute(mMapExtrinsicsTfPublisherNode, nodeConfiguration);
+        */
 
         nodeConfiguration.setNodeName(DefaultRobotTfPublisherNode.NODE_NAME);
         mRobotExtrinsicsTfPublisherNode = new DefaultRobotTfPublisherNode(getDeviceTransform());
@@ -336,12 +339,14 @@ public class MainActivity extends AppCompatRosActivity implements TangoServiceCl
 
     private void startMapServerNode() {
         // Create ROS node to publish the map
+        /*
         mLog.info("Starting map server");
         NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(mHostName);
         nodeConfiguration.setMasterUri(mMasterUri);
         nodeConfiguration.setNodeName(OccupancyGridPublisherNode.NODE_NAME);
         mOccupancyGridPublisherNode = new OccupancyGridPublisherNode(new EmptyMapGenerator());
         mNodeMainExecutor.execute(mOccupancyGridPublisherNode, nodeConfiguration);
+        */
     }
 
     private void startBaseControllerNode() {
@@ -455,7 +460,11 @@ public class MainActivity extends AppCompatRosActivity implements TangoServiceCl
             // Turtlebot demos and apps.
             String[] topicMap = {
                     "/tango/laser_scan:=/scan",
-                    "/tango/camera/color_1/image_raw/compressed:=/compressed_image"
+                    // TODO(adamantivm) This works OK for display in the map_nav Android application
+                    // but it's not the proper way to remap an image_transport topic. This needs to
+                    // be investigated and remapped properly.
+                    "/tango/camera/color_1/image_raw/compressed:=/compressed_image",
+                    "/tango/reconstruction/occupancy_grid:=/map"
             };
 
             mTangoNodeletManager = new TangoNodeletManager(topicMap);
